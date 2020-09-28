@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { FiPower, FiClock } from 'react-icons/fi';
 
@@ -10,6 +10,8 @@ import {
   Content,
   Schedule,
   Calendar,
+  Section,
+  Appointment,
   NextAppointment,
 } from './styles';
 
@@ -17,6 +19,8 @@ import logoImg from '../../assets/logo.svg';
 import { useAuth } from '../../hooks/auth';
 
 const Dashboard: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const { signOut, user } = useAuth();
 
   return (
@@ -63,6 +67,74 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
           </NextAppointment>
+
+          <Section>
+            <strong>Manhã</strong>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+
+              <div>
+                <img
+                  src="https://avatars3.githubusercontent.com/u/13968401?s=460&u=cfb4465dc5952c1019875dcfde3bee8274b6dd5d&v=4"
+                  alt="Guilherme Oliveira"
+                />
+                <strong>Guilherme Silva</strong>
+              </div>
+            </Appointment>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+
+              <div>
+                <img
+                  src="https://avatars3.githubusercontent.com/u/13968401?s=460&u=cfb4465dc5952c1019875dcfde3bee8274b6dd5d&v=4"
+                  alt="Guilherme Oliveira"
+                />
+                <strong>Guilherme Silva</strong>
+              </div>
+            </Appointment>
+          </Section>
+
+          <Section>
+            <strong>Tarde</strong>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+
+              <div>
+                <img
+                  src="https://avatars3.githubusercontent.com/u/13968401?s=460&u=cfb4465dc5952c1019875dcfde3bee8274b6dd5d&v=4"
+                  alt="Guilherme Oliveira"
+                />
+                <strong>Guilherme Silva</strong>
+              </div>
+            </Appointment>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+
+              <div>
+                <img
+                  src="https://avatars3.githubusercontent.com/u/13968401?s=460&u=cfb4465dc5952c1019875dcfde3bee8274b6dd5d&v=4"
+                  alt="Guilherme Oliveira"
+                />
+                <strong>Guilherme Silva</strong>
+              </div>
+            </Appointment>
+          </Section>
         </Schedule>
         <Calendar />
       </Content>
