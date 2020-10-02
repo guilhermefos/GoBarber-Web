@@ -33,6 +33,7 @@ const AuthProvider: React.FC = ({ children }) => {
     const token = sessionStorage.getItem('@GoBarber:token');
 
     if (user && token) {
+      api.defaults.headers.authorization = `Bearer ${token}`;
       return { user: JSON.parse(user), token };
     }
 
@@ -46,6 +47,8 @@ const AuthProvider: React.FC = ({ children }) => {
 
     sessionStorage.setItem('@GoBarber:token', token);
     sessionStorage.setItem('@GoBarber:user', JSON.stringify(user));
+
+    api.defaults.headers.authorization = `Bearer ${token}`;
 
     setData({ user, token });
   }, []);
