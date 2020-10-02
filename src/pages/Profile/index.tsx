@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable no-unused-expressions */
 import React, { ChangeEvent, useCallback, useRef } from 'react';
 import { useHistory, Link } from 'react-router-dom';
@@ -21,6 +22,8 @@ interface ProfileFormData {
   name: string;
   email: string;
   password: string;
+  old_password: string;
+  password_confirmation: string;
 }
 
 const Profile: React.FC = () => {
@@ -39,25 +42,71 @@ const Profile: React.FC = () => {
           email: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um email válido'),
-          password: Yup.string().min(6, 'No minimo 6 digitos'),
+          old_password: Yup.string(),
+          password: Yup.string().when('old_password', {
+            is: val => !!val.lenght,
+            then: Yup.string().required,
+            otherwise: Yup.string(),
+          }),
+          password_confirmation: Yup.string()
+            .when('old_password', {
+              is: val => !!val.lenght,
+              then: Yup.string().required,
+              otherwise: Yup.string(),
+            })
+            .oneOf([Yup.ref('password'), undefined], 'Confirmação incorreta'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        const { name, email, password } = data;
-
-        await api.post('users', {
+        const {
           name,
           email,
+          old_password,
           password,
-        });
+          password_confirmation,
+        } = data;
 
-        history.push('/');
+        const formData = {
+          name,
+          email,
+          ...(old_password
+            ? {
+                old_password,
+                password,
+                password_confirmation,
+              }
+            : {}),
+        };
+
+        const response = await api.put('profile', formData);
+
+        updateUser(response.data);
+
+        history.push('/dashboard');
+
+        addToast({
+          type: 'success',
+          title: 'Perfil atualizado!',
+          description:
+            'As informações do perfil foram atualizadas com sucesso!',
+        });
       } catch (error) {
-        const errors = getValidationErrors(error);
-        formRef.current?.setErrors(errors);
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(error);
+
+          formRef.current?.setErrors(errors);
+
+          return;
+        }
+
+        addToast({
+          type: 'error',
+          title: 'Erro na atualização!',
+          description: 'Ocorreu um erro ao atualizar o perfil, tente novamente',
+        });
       }
     },
     [history],
